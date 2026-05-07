@@ -1,5 +1,16 @@
 import SwiftUI
 
+private struct ProgramVisualStyle {
+    let accent: Color
+    let headerBackground: Color
+    let panelBackground: Color
+    let panelBorder: Color
+    let mutedPanelBackground: Color
+    let badgeBackground: Color
+    let badgeBorder: Color
+    let tagLine: String
+}
+
 struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     private let sceneResolver = SceneResolver()
@@ -22,7 +33,7 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            Color(nsColor: .windowBackgroundColor)
+            visualStyle.headerBackground
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {
@@ -82,6 +93,7 @@ struct ContentView: View {
         }
         .padding(.horizontal, 24)
         .padding(.vertical, 18)
+        .background(visualStyle.headerBackground.opacity(0.96))
     }
 
     private var stationPanel: some View {
@@ -93,6 +105,10 @@ struct ContentView: View {
                 Text(currentProgram.subtitle)
                     .font(.title3)
                     .foregroundStyle(.secondary)
+
+                Text(visualStyle.tagLine)
+                    .font(.caption)
+                    .foregroundStyle(visualStyle.accent)
 
                 scheduleStrip
             }
@@ -140,6 +156,8 @@ struct ContentView: View {
                         }
                         .padding(.top, 6)
                     }
+
+                    matchResultSection
                 }
 
                 Spacer()
@@ -163,7 +181,7 @@ struct ContentView: View {
                 .foregroundStyle(.secondary)
             }
             .padding(18)
-            .background(.quaternary.opacity(0.35))
+            .background(visualStyle.mutedPanelBackground)
             .clipShape(RoundedRectangle(cornerRadius: 8))
 
             playbackSection
@@ -171,27 +189,27 @@ struct ContentView: View {
             Spacer(minLength: 0)
         }
         .padding(24)
-        .background(.background)
+        .background(visualStyle.panelBackground)
         .clipShape(RoundedRectangle(cornerRadius: 8))
         .overlay(
             RoundedRectangle(cornerRadius: 8)
-                .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
+                .stroke(visualStyle.panelBorder, lineWidth: 1)
         )
     }
 
     private var hostVisual: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 8)
-                .fill(Color(nsColor: .controlBackgroundColor))
+                .fill(visualStyle.mutedPanelBackground)
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
-                        .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
+                        .stroke(visualStyle.panelBorder, lineWidth: 1)
                 )
 
             VStack(spacing: 12) {
                 Image(systemName: "dot.radiowaves.left.and.right")
                     .font(.system(size: 48, weight: .regular))
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(visualStyle.accent)
 
                 Text(hostState.rawValue)
                     .font(.headline)
@@ -332,11 +350,11 @@ struct ContentView: View {
             .font(.callout)
             .padding(.horizontal, 12)
             .padding(.vertical, 7)
-            .background(Color(nsColor: .controlBackgroundColor))
+            .background(visualStyle.badgeBackground)
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
+                    .stroke(visualStyle.badgeBorder, lineWidth: 1)
             )
     }
 
@@ -431,6 +449,66 @@ struct ContentView: View {
     private func stopDisplayTimer() {
         displayTimer?.invalidate()
         displayTimer = nil
+    }
+
+    private var visualStyle: ProgramVisualStyle {
+        switch currentProgram.scene {
+        case .morning:
+            return ProgramVisualStyle(
+                accent: Color(red: 0.94, green: 0.55, blue: 0.28),
+                headerBackground: Color(red: 0.99, green: 0.96, blue: 0.91),
+                panelBackground: Color.white.opacity(0.9),
+                panelBorder: Color(red: 0.91, green: 0.79, blue: 0.66),
+                mutedPanelBackground: Color(red: 0.99, green: 0.94, blue: 0.87),
+                badgeBackground: Color(red: 1.0, green: 0.95, blue: 0.88),
+                badgeBorder: Color(red: 0.91, green: 0.79, blue: 0.66),
+                tagLine: "Warm light for the morning set"
+            )
+        case .work:
+            return ProgramVisualStyle(
+                accent: Color(red: 0.19, green: 0.48, blue: 0.79),
+                headerBackground: Color(red: 0.92, green: 0.96, blue: 0.99),
+                panelBackground: Color.white.opacity(0.92),
+                panelBorder: Color(red: 0.72, green: 0.82, blue: 0.92),
+                mutedPanelBackground: Color(red: 0.93, green: 0.96, blue: 0.99),
+                badgeBackground: Color(red: 0.92, green: 0.96, blue: 0.99),
+                badgeBorder: Color(red: 0.72, green: 0.82, blue: 0.92),
+                tagLine: "Focused cues for a steadier work block"
+            )
+        case .lunch:
+            return ProgramVisualStyle(
+                accent: Color(red: 0.67, green: 0.45, blue: 0.23),
+                headerBackground: Color(red: 0.98, green: 0.95, blue: 0.9),
+                panelBackground: Color.white.opacity(0.91),
+                panelBorder: Color(red: 0.87, green: 0.78, blue: 0.67),
+                mutedPanelBackground: Color(red: 0.97, green: 0.93, blue: 0.87),
+                badgeBackground: Color(red: 0.98, green: 0.94, blue: 0.88),
+                badgeBorder: Color(red: 0.87, green: 0.78, blue: 0.67),
+                tagLine: "A softer lunch-table palette"
+            )
+        case .nap:
+            return ProgramVisualStyle(
+                accent: Color(red: 0.43, green: 0.47, blue: 0.72),
+                headerBackground: Color(red: 0.92, green: 0.93, blue: 0.98),
+                panelBackground: Color.white.opacity(0.9),
+                panelBorder: Color(red: 0.74, green: 0.77, blue: 0.9),
+                mutedPanelBackground: Color(red: 0.91, green: 0.93, blue: 0.98),
+                badgeBackground: Color(red: 0.92, green: 0.94, blue: 0.99),
+                badgeBorder: Color(red: 0.74, green: 0.77, blue: 0.9),
+                tagLine: "Quiet color for a short reset"
+            )
+        case .happy:
+            return ProgramVisualStyle(
+                accent: Color(red: 0.2, green: 0.63, blue: 0.5),
+                headerBackground: Color(red: 0.9, green: 0.98, blue: 0.95),
+                panelBackground: Color.white.opacity(0.92),
+                panelBorder: Color(red: 0.69, green: 0.88, blue: 0.81),
+                mutedPanelBackground: Color(red: 0.89, green: 0.97, blue: 0.94),
+                badgeBackground: Color(red: 0.9, green: 0.98, blue: 0.95),
+                badgeBorder: Color(red: 0.69, green: 0.88, blue: 0.81),
+                tagLine: "Brighter color for the afternoon lift"
+            )
+        }
     }
 
     private var importedTrackCountText: String {
@@ -556,6 +634,38 @@ struct ContentView: View {
             upNextTrack: audioPlayerService.upNextTrack
         )
     }
+
+    private var matchResultSection: some View {
+        let result = sceneTrackSelector.matchResult(
+            currentTrack: audioPlayerService.currentTrack,
+            upNextTrack: audioPlayerService.upNextTrack,
+            scene: currentProgram.scene
+        )
+
+        return VStack(alignment: .leading, spacing: 10) {
+            Label("Match Result", systemImage: "sparkles")
+                .font(.headline)
+
+            Text(result.currentTrackLine)
+                .font(.callout)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(result.upNextTrackLine)
+                .font(.callout)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if let fallbackLine = result.fallbackLine {
+                Text(fallbackLine)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(.top, 10)
+    }
+
 
     private var djIntroText: String {
         radioCopywriter.djIntro(

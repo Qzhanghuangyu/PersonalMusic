@@ -44,6 +44,37 @@ final class SceneTrackSelectorTests: XCTestCase {
         XCTAssertEqual(ordered, [first, second, third])
     }
 
+
+    func testMatchResultIncludesCurrentAndUpNextReasons() {
+        let current = track(named: "Deep Focus Coding Session")
+        let upNext = track(named: "Instrumental Flow")
+
+        let result = selector.matchResult(currentTrack: current, upNextTrack: upNext, scene: .work)
+
+        XCTAssertTrue(result.currentTrackLine.contains("focus"))
+        XCTAssertTrue(result.currentTrackLine.contains("focus, coding"))
+        XCTAssertTrue(result.upNextTrackLine.contains("scored below the current track"))
+        XCTAssertNil(result.fallbackLine)
+    }
+
+    func testMatchResultFallsBackToOriginalOrderWhenNothingMatches() {
+        let current = track(named: "Night Bus")
+        let upNext = track(named: "Side Street")
+
+        let result = selector.matchResult(currentTrack: current, upNextTrack: upNext, scene: .lunch)
+
+        XCTAssertTrue(result.currentTrackLine.contains("original order"))
+        XCTAssertTrue(result.upNextTrackLine.contains("original order"))
+        XCTAssertEqual(
+            result.fallbackLine,
+            "No scene keywords matched yet, so the queue keeps its original order until the next refresh."
+        )
+    }
+
+    private func track(named name: String) -> Track {
+        Track(url: url(named: name), title: name)
+    }
+
     private func url(named name: String) -> URL {
         URL(fileURLWithPath: "/tmp/\(name).mp3")
     }
