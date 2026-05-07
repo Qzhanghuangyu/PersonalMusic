@@ -2,6 +2,11 @@
 DerivedData/
 build/
 
+# Xcode generated workspace and user UI state.
+PersonalMusicRadio.xcodeproj/project.xcworkspace/contents.xcworkspacedata
+PersonalMusicRadio.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcuserstate
+
 # OMX runtime state and machine-local setup.
 .omx/
 .codex/*
