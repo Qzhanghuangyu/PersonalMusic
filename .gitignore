@@ -1,0 +1,15 @@
+.DS_Store
+DerivedData/
+build/
+
+# OMX runtime state and machine-local setup.
+.omx/
+.codex/*
+!.codex/
+!.codex/prompts/
+.codex/prompts/*
+!.codex/prompts/product-manager.md
+!.codex/prompts/designer.md
+!.codex/prompts/executor.md
+!.codex/prompts/qa-tester.md
+!.codex/prompts/leader-fixed.md
